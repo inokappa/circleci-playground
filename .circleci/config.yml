@@ -7,4 +7,4 @@ jobs:
       - run:
           name: Hello world
           command: |
-            echo "Hello CircleCI!!"
+            echo "Hello CircleCI!!" > hello.txt
