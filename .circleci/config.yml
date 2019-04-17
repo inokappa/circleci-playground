@@ -4,34 +4,34 @@ jobs:
     docker:
       - image: docker:18.06.0-ce-git
     steps:
-      - run:
-          name: Hello world
-          command: |
-            echo "Hello CircleCI!!" > hello.txt
       - restore_cache:
-          key: cache-date-{{ .Branch }}
+          key: cache-data-{{ .Branch }}
       - run:
-          name: Restore and Cache data
+          name: Restore data
           command: |
             if [ -f data.txt ];then
-              cat date.txt
+              cat data.txt
             else
-              date > date.txt
+              for n in $(seq 0 100)
+              do
+                echo n >> data.txt
+                sleep 0.3
+              done
             fi
       - save_cache:
-          key: cache-date-{{ .Branch }}
+          key: cache-data-{{ .Branch }}
           paths:
-            - date.txt
+            - data.txt
       - run:
-          name: Remove date.txt
+          name: Remove data.txt
           command: |
-            rm -rf date.txt && sleep 5 && ls -al
+            rm -rf data.txt && sleep 5 && ls -al
       - restore_cache:
           key: cache-date-{{ .Branch }}
       - run:
           name: Restore data
           command: |
-            cat date.txt
+            cat data.txt
  
 workflows:
   version: 2
