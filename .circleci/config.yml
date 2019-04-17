@@ -5,7 +5,7 @@ jobs:
       - image: docker:18.06.0-ce-git
     steps:
       - restore_cache:
-          key: cache-data-{{ .Branch }}
+          key: cache-data-foo
       - run:
           name: Restore data
           command: |
