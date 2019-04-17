@@ -8,6 +8,12 @@ jobs:
           name: Hello world
           command: |
             echo "Hello CircleCI!!" > hello.txt
+      - restore_cache:
+          key: cache-date
+      - run:
+          name: Restore data
+          command: |
+            cat date.txt
       - run:
           name: Cache data
           command: |
@@ -19,7 +25,7 @@ jobs:
       - run:
           name: Remove date.txt
           command: |
-            rm -rf date.txt
+            rm -rf date.txt && ls -al
       - restore_cache:
           key: cache-date
       - run:
