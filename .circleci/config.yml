@@ -11,13 +11,13 @@ jobs:
       - restore_cache:
           key: cache-date-{{ .Branch }}
       - run:
-          name: Restore data
+          name: Restore and Cache data
           command: |
-            cat date.txt
-      - run:
-          name: Cache data
-          command: |
-            date > date.txt
+            if [ -f data.txt ];then
+              cat date.txt
+            else
+              date > date.txt
+            fi
       - save_cache:
           key: cache-date-{{ .Branch }}
           paths:
@@ -25,7 +25,7 @@ jobs:
       - run:
           name: Remove date.txt
           command: |
-            rm -rf date.txt && ls -al
+            rm -rf date.txt && sleep 5 && ls -al
       - restore_cache:
           key: cache-date-{{ .Branch }}
       - run:
