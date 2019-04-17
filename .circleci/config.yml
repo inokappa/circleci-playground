@@ -27,7 +27,7 @@ jobs:
           command: |
             rm -rf data.txt && sleep 5 && ls -al
       - restore_cache:
-          key: cache-date-{{ .Branch }}
+          key: cache-data-{{ .Branch }}
       - run:
           name: Restore data
           command: |
