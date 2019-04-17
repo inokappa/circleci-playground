@@ -9,7 +9,7 @@ jobs:
           command: |
             echo "Hello CircleCI!!" > hello.txt
       - restore_cache:
-          key: cache-date
+          key: cache-date-{{ .Branch }}
       - run:
           name: Restore data
           command: |
@@ -19,7 +19,7 @@ jobs:
           command: |
             date > date.txt
       - save_cache:
-          key: cache-date
+          key: cache-date-{{ .Branch }}
           paths:
             - date.txt
       - run:
@@ -27,7 +27,7 @@ jobs:
           command: |
             rm -rf date.txt && ls -al
       - restore_cache:
-          key: cache-date
+          key: cache-date-{{ .Branch }}
       - run:
           name: Restore data
           command: |
