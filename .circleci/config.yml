@@ -8,6 +8,24 @@ jobs:
           name: Hello world
           command: |
             echo "Hello CircleCI!!" > hello.txt
+      - run:
+          name: Cache data
+          command: |
+            date > date.txt
+      - save_cache:
+          key: cache-date
+          paths:
+            - date.txt
+      - run:
+          name: Remove date.txt
+          command: |
+            rm -rf date.txt
+      - restore_cache:
+          key: cache-date
+      - run:
+          name: Restore data
+          command: |
+            cat date.txt
  
 workflows:
   version: 2
