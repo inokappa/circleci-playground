@@ -1,7 +1,7 @@
 version: 2
 jobs:
-  parallelism: 2
   build:
+    parallelism: 2
     docker:
       - image: docker:18.06.0-ce-git
     steps:
