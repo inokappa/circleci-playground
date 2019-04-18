@@ -36,7 +36,7 @@ jobs:
       - run:
           name: Paralell Test
           command: |
-            sh $(circleci tests glob "tests/*" | circleci tests split --split-by=timings)
+            sh $(circleci tests glob "tests/*" | circleci tests split)
  
 workflows:
   version: 2
