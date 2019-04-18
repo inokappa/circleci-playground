@@ -1,5 +1,6 @@
 version: 2
 jobs:
+  parallelism: 2
   build:
     docker:
       - image: docker:18.06.0-ce-git
@@ -32,6 +33,10 @@ jobs:
           name: Restore data
           command: |
             cat data.txt
+      - run:
+          name: Paralell Test
+          command: |
+            sh $(circleci tests glob "tests/*" | circleci tests split --split-by=timings)
  
 workflows:
   version: 2
