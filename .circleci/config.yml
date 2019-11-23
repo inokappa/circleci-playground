@@ -1,49 +1,12 @@
 version: 2
 jobs:
   build:
-    parallelism: 2
     docker:
-      - image: docker:18.06.0-ce-git
+      - image: docker:19.03.5-git
     steps:
-      - restore_cache:
-          key: cache-data-foo
+      - checkout
       - run:
-          name: Restore data
+          name: Test
           command: |
-            if [ -f data.txt ];then
-              cat data.txt
-            else
-              for n in $(seq 0 100)
-              do
-              echo $n >> data.txt
-                sleep 0.3
-              done
-            fi
-      - save_cache:
-          key: cache-data-{{ .Branch }}
-          paths:
-            - data.txt
-      - run:
-          name: Remove data.txt
-          command: |
-            rm -rf data.txt && sleep 5 && ls -al
-      - restore_cache:
-          key: cache-data-{{ .Branch }}
-      - run:
-          name: Restore data
-          command: |
-            cat data.txt
-      - run:
-          name: Paralell Test
-          command: |
-            sh $(circleci tests glob "tests/*" | circleci tests split)
- 
-workflows:
-  version: 2
-  pr-build:
-    jobs:
-      - build:
-          filters:
-            branches:
-              ignore:
-                - master
+            docker info
+
