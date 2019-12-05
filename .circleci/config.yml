@@ -38,7 +38,6 @@ workflows:
       - test:
           filters:
             branches:
-              # ignore: /(master|development)/
               ignore: 
                 - master
                 - development
