@@ -38,19 +38,17 @@ workflows:
       - test:
           filters:
             branches:
-              # ignore: /(master|development)/
               ignore: 
                 - master
                 - development
   build-after-deploy:
     jobs:
-      - build
-      - deploy:
-          requires:
-            - build
+      - build:
           filters:
             branches:
               only: 
                 - master
                 - development
-
+      - deploy:
+          requires:
+            - build
