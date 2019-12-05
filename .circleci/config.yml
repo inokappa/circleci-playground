@@ -1,18 +1,50 @@
-version: 2
-jobs:
-  build:
+version: 2.1
+
+executors:
+  default:
     docker:
       - image: docker:19.03.5-git
+
+jobs:
+  test:
+    executor:
+      name: default
     steps:
-      - checkout
-      - setup_remote_docker
       - run:
           name: Test
           command: |
-            echo '--- ホストのグローバル IP アドレスを確認 ----------------------------'
-            apk add curl
-            curl httpbin.org/ip
-            echo '--- env で環境変数を確認 --------------------------------------------'
-            env
-            echo '--- docker ps が実行出来るか確認 ------------------------------------'
-            docker ps
+            echo 'Test'
+  build:
+    executor:
+      name: default
+    steps:
+      - run:
+          name: Build
+          command: |
+            echo 'Build'
+  deploy:
+    executor:
+      name: default
+    steps:
+      - run:
+          name: Deploy
+          command: |
+            echo 'Deploy'
+
+workflows:
+  version: 2
+  test-only:
+    jobs:
+      - test:
+          filters:
+            branches:
+              ignore: /(master|development)/
+  build-after-deploy:
+    jobs:
+      - build:
+          filters:
+            branches:
+              only: /(master|development)/
+      - deploy:
+          requires:
+            - build
