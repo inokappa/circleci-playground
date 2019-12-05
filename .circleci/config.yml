@@ -45,11 +45,12 @@ workflows:
   build-after-deploy:
     jobs:
       - build:
+      - deploy:
+          requires:
+            - build
           filters:
             branches:
               only: 
                 - master
                 - development
-      - deploy:
-          requires:
-            - build
+
