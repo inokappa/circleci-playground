@@ -44,7 +44,7 @@ workflows:
                 - development
   build-after-deploy:
     jobs:
-      - build:
+      - build
       - deploy:
           requires:
             - build
