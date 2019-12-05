@@ -1,20 +1,55 @@
-version: 2
-jobs:
-  build:
+version: 2.1
+
+executors:
+  default:
     docker:
-      - image: docker:18.06.0-ce-git
+      - image: docker:19.03.5-git
+
+jobs:
+  test:
+    executor:
+      name: default
     steps:
       - run:
-          name: Hello world
+          name: Test
           command: |
-            echo "Hello CircleCI!!" > hello.txt
- 
+            echo 'Test'
+  build:
+    executor:
+      name: default
+    steps:
+      - run:
+          name: Build
+          command: |
+            echo 'Build'
+  deploy:
+    executor:
+      name: default
+    steps:
+      - run:
+          name: Deploy
+          command: |
+            echo 'Deploy'
+
 workflows:
   version: 2
-  pr-build:
+  test-only:
+    jobs:
+      - test:
+          filters:
+            branches:
+              # ignore: /(master|development)/
+              ignore: 
+                - master
+                - development
+  build-after-deploy:
     jobs:
       - build:
           filters:
             branches:
-              ignore:
+              only: 
                 - master
+                - development
+      - deploy:
+          requires:
+            - build
