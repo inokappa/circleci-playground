@@ -1,9 +1,69 @@
 version: 2.1
 
+orbs:
+  aws-sg-white-list-circleci-ip: inokappa/aws-sg-white-list-circleci-ip@0.0.1
+
 executors:
   default:
     docker:
       - image: docker:19.03.5-git
+  aws-sg-white-list-circleci-ip-demo:
+    docker:
+      - image: cimg/python:3.9
+        environment:
+          AWS_ACCESS_KEY_ID: EXAMPLEKEY123
+          AWS_SECRET_ACCESS_KEY: EXAMPLESECRET123456
+          AWS_DEFAULT_REGION: us-east-1
+          AWS_REGION: us-east-1
+          AWS_ENDPOINT: http://moto-server:5000
+          AWS_DISABLE_SSL: true
+      - image: motoserver/moto
+        name: moto-server
+        command: ["ec2", "-H", "0.0.0.0"]
+
+commands:
+  install-awscli:
+    steps:
+      - run:
+          name: Install awscli
+          command: |
+            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
+              unzip awscliv2.zip && \
+              sudo ./aws/install
+
+  create-security-group:
+    steps:
+      - run:
+          name: Create Security Group
+          command: |
+            SG_ID=$(aws --endpoint ${AWS_ENDPOINT} ec2 \
+              create-security-group --group-name MySecurityGroup --description "My security group" \
+            | jq -r '.GroupId')
+            echo "export GROUP_ID=${SG_ID}" >> $BASH_ENV
+            aws --endpoint ${AWS_ENDPOINT} ec2 \
+              create-tags --resources ${SG_ID} --tags Key=sg-white-list,Value=true
+
+  check-exists-ip-permission:
+    steps:
+      - run:
+          name: Check exists IP Permission in Security Group
+          command: |
+            COUNT=$(aws --endpoint ${AWS_ENDPOINT} ec2 describe-security-groups --group-ids ${GROUP_ID} \
+                    | jq '.SecurityGroups[].IpPermissions|length')
+            if [ $COUNT != 1 ];then
+              exit 1
+            fi
+
+  check-not-exists-ip-permission:
+    steps:
+      - run:
+          name: Check not exists IP Permission in Security Group
+          command: |
+            COUNT=$(aws --endpoint ${AWS_ENDPOINT} ec2 describe-security-groups --group-ids ${GROUP_ID} \
+                    | jq '.SecurityGroups[].IpPermissions|length')
+            if [ $COUNT != 0 ];then
+              exit 1
+            fi
 
 jobs:
   test:
@@ -14,6 +74,7 @@ jobs:
           name: Test
           command: |
             echo 'Test'
+
   build:
     executor:
       name: default
@@ -22,6 +83,7 @@ jobs:
           name: Build
           command: |
             echo 'Build'
+
   deploy:
     executor:
       name: default
@@ -31,8 +93,29 @@ jobs:
           command: |
             echo 'Deploy'
 
+  aws-sg-white-list-circleci-ip-demo:
+    environment:
+      AWS_PAGER: ''
+      GROUP_ID: ''
+    executor: aws-sg-white-list-circleci-ip-demo
+    steps:
+      - checkout
+      - install-awscli
+      - create-security-group
+      - aws-sg-white-list-circleci-ip/add:
+          tag-key: 'sg-white-list'
+          tag-value: 'true'
+          description: 'Test-Permission'
+      - check-exists-ip-permission
+      - aws-sg-white-list-circleci-ip/del:
+          tag-key: 'sg-white-list'
+          tag-value: 'true'
+          description: 'Test-Permission'
+      - check-not-exists-ip-permission
+
 workflows:
   version: 2
+
   test-only:
     jobs:
       - test:
@@ -41,6 +124,7 @@ workflows:
               ignore: 
                 - master
                 - development
+
   build-after-deploy:
     jobs:
       - build:
@@ -52,3 +136,11 @@ workflows:
       - deploy:
           requires:
             - build
+
+  aws-sg-white-list-circleci-ip-demo:
+    jobs:
+      - aws-sg-white-list-circleci-ip-demo:
+          filters:
+            branches:
+              only:
+                - aws-sg-white-list-circleci-ip-demo
