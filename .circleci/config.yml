@@ -93,7 +93,7 @@ jobs:
           command: |
             echo 'Deploy'
 
-  aws-sg-white-list-circleci-ip-demo:
+  aws-sg-white-list-circleci-ip-demo1:
     environment:
       AWS_PAGER: ''
       GROUP_ID: ''
@@ -111,7 +111,31 @@ jobs:
           tag-key: 'sg-white-list'
           tag-value: 'true'
           description: 'Test-Permission'
-          when: always
+      - check-not-exists-ip-permission
+
+  aws-sg-white-list-circleci-ip-demo2:
+    environment:
+      AWS_PAGER: ''
+      GROUP_ID: ''
+    executor: aws-sg-white-list-circleci-ip-demo
+    steps:
+      - checkout
+      - install-awscli
+      - create-security-group
+      - aws-sg-white-list-circleci-ip/add:
+          tag-key: 'sg-white-list'
+          tag-value: 'true'
+          description: 'Test-Permission'
+      - check-exists-ip-permission
+      - run:
+          name: Command failure
+          command: |
+            echo 'Command failure.'
+            exit 1
+      - aws-sg-white-list-circleci-ip/del:
+          tag-key: 'sg-white-list'
+          tag-value: 'true'
+          description: 'Test-Permission'
       - check-not-exists-ip-permission
 
 workflows:
@@ -140,7 +164,12 @@ workflows:
 
   aws-sg-white-list-circleci-ip-demo:
     jobs:
-      - aws-sg-white-list-circleci-ip-demo:
+      - aws-sg-white-list-circleci-ip-demo1:
+          filters:
+            branches:
+              only:
+                - aws-sg-white-list-circleci-ip-demo
+      - aws-sg-white-list-circleci-ip-demo2:
           filters:
             branches:
               only:
