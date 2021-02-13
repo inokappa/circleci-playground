@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  aws-sg-white-list-circleci-ip: inokappa/aws-sg-white-list-circleci-ip@0.0.2
+  aws-sg-white-list-circleci-ip: inokappa/aws-sg-white-list-circleci-ip@0.0.3
 
 executors:
   default:
