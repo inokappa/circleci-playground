@@ -2,6 +2,7 @@ version: 2.1
 
 orbs:
   aws-sg-white-list-circleci-ip: inokappa/aws-sg-white-list-circleci-ip@0.0.3
+  aws-cloudwatch-dashboard-annotation: inokappa/aws-cloudwatch-dashboard-annotation@0.0.1
 
 executors:
   default:
@@ -19,7 +20,7 @@ executors:
           AWS_DISABLE_SSL: true
       - image: motoserver/moto
         name: moto-server
-        command: ["ec2", "-H", "0.0.0.0"]
+        command: ["cloudwatch", "-H", "0.0.0.0"]
 
 commands:
   install-awscli:
@@ -30,40 +31,6 @@ commands:
             curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
               unzip awscliv2.zip && \
               sudo ./aws/install
-
-  create-security-group:
-    steps:
-      - run:
-          name: Create Security Group
-          command: |
-            SG_ID=$(aws --endpoint ${AWS_ENDPOINT} ec2 \
-              create-security-group --group-name MySecurityGroup --description "My security group" \
-            | jq -r '.GroupId')
-            echo "export GROUP_ID=${SG_ID}" >> $BASH_ENV
-            aws --endpoint ${AWS_ENDPOINT} ec2 \
-              create-tags --resources ${SG_ID} --tags Key=sg-white-list,Value=true
-
-  check-exists-ip-permission:
-    steps:
-      - run:
-          name: Check exists IP Permission in Security Group
-          command: |
-            COUNT=$(aws --endpoint ${AWS_ENDPOINT} ec2 describe-security-groups --group-ids ${GROUP_ID} \
-                    | jq '.SecurityGroups[].IpPermissions|length')
-            if [ $COUNT != 1 ];then
-              exit 1
-            fi
-
-  check-not-exists-ip-permission:
-    steps:
-      - run:
-          name: Check not exists IP Permission in Security Group
-          command: |
-            COUNT=$(aws --endpoint ${AWS_ENDPOINT} ec2 describe-security-groups --group-ids ${GROUP_ID} \
-                    | jq '.SecurityGroups[].IpPermissions|length')
-            if [ $COUNT != 0 ];then
-              exit 1
-            fi
 
 jobs:
   test:
@@ -138,6 +105,24 @@ jobs:
           description: 'Test-Permission'
       - check-not-exists-ip-permission
 
+  aws-cloudwatch-dashboard-annotation-demo1:
+    environment:
+      AWS_PAGER: ''
+    executor: default
+    steps:
+      - checkout
+      - install-awscli
+      - run:
+          name: Your Deploy Action
+          command: |
+            echo "Your Deploy Action"
+            echo "export DEPLOY_FINISHED_DATETIME=$(date -u '+%Y-%m-%dT%H:%M:%S%z')" >> $BASH_ENV
+      - aws-cloudwatch-dashboard-annotation/add:
+          dashboard_title: "ECS-dashboard"
+          widget_title: "CPUUtilization"
+          display_diff: "yes"
+          deploy_finished_datetime: ${DEPLOY_FINISHED_DATETIME}
+
 workflows:
   version: 2
 
@@ -174,3 +159,11 @@ workflows:
             branches:
               only:
                 - aws-sg-white-list-circleci-ip-demo
+
+  aws-cloudwatch-dashboard-annotation-demo:
+    jobs:
+      - aws-cloudwatch-dashboard-annotation-demo1:
+          filters:
+            branches:
+              only:
+                - aws-cloudwatch-dashboard-annotation-demo
