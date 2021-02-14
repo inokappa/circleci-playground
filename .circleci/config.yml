@@ -54,10 +54,9 @@ jobs:
   aws-cloudwatch-dashboard-annotation-demo1:
     environment:
       AWS_PAGER: ''
-    executor: aws-cloudwatch-dashboard-annotation-demo
+    executor: default
     steps:
       - checkout
-      - install-awscli
       - run:
           name: Your Deploy Action
           command: |
