@@ -1,8 +1,7 @@
 version: 2.1
 
 orbs:
-  aws-sg-white-list-circleci-ip: inokappa/aws-sg-white-list-circleci-ip@0.0.3
-  aws-cloudwatch-dashboard-annotation: inokappa/aws-cloudwatch-dashboard-annotation@0.0.1
+  aws-cloudwatch-dashboard-annotation: inokappa/aws-cloudwatch-dashboard-annotation@0.0.2
 
 executors:
   default:
