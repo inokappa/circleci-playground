@@ -8,19 +8,6 @@ executors:
   default:
     docker:
       - image: docker:19.03.5-git
-  aws-sg-white-list-circleci-ip-demo:
-    docker:
-      - image: cimg/python:3.9
-        environment:
-          AWS_ACCESS_KEY_ID: EXAMPLEKEY123
-          AWS_SECRET_ACCESS_KEY: EXAMPLESECRET123456
-          AWS_DEFAULT_REGION: us-east-1
-          AWS_REGION: us-east-1
-          AWS_ENDPOINT: http://moto-server:5000
-          AWS_DISABLE_SSL: true
-      - image: motoserver/moto
-        name: moto-server
-        command: ["cloudwatch", "-H", "0.0.0.0"]
 
 commands:
   install-awscli:
@@ -59,51 +46,6 @@ jobs:
           name: Deploy
           command: |
             echo 'Deploy'
-
-  aws-sg-white-list-circleci-ip-demo1:
-    environment:
-      AWS_PAGER: ''
-      GROUP_ID: ''
-    executor: aws-sg-white-list-circleci-ip-demo
-    steps:
-      - checkout
-      - install-awscli
-      - create-security-group
-      - aws-sg-white-list-circleci-ip/add:
-          tag-key: 'sg-white-list'
-          tag-value: 'true'
-          description: 'Test-Permission'
-      - check-exists-ip-permission
-      - aws-sg-white-list-circleci-ip/del:
-          tag-key: 'sg-white-list'
-          tag-value: 'true'
-          description: 'Test-Permission'
-      - check-not-exists-ip-permission
-
-  aws-sg-white-list-circleci-ip-demo2:
-    environment:
-      AWS_PAGER: ''
-      GROUP_ID: ''
-    executor: aws-sg-white-list-circleci-ip-demo
-    steps:
-      - checkout
-      - install-awscli
-      - create-security-group
-      - aws-sg-white-list-circleci-ip/add:
-          tag-key: 'sg-white-list'
-          tag-value: 'true'
-          description: 'Test-Permission'
-      - check-exists-ip-permission
-      - run:
-          name: Command failure
-          command: |
-            echo 'Command failure.'
-            exit 1
-      - aws-sg-white-list-circleci-ip/del:
-          tag-key: 'sg-white-list'
-          tag-value: 'true'
-          description: 'Test-Permission'
-      - check-not-exists-ip-permission
 
   aws-cloudwatch-dashboard-annotation-demo1:
     environment:
@@ -146,19 +88,6 @@ workflows:
       - deploy:
           requires:
             - build
-
-  aws-sg-white-list-circleci-ip-demo:
-    jobs:
-      - aws-sg-white-list-circleci-ip-demo1:
-          filters:
-            branches:
-              only:
-                - aws-sg-white-list-circleci-ip-demo
-      - aws-sg-white-list-circleci-ip-demo2:
-          filters:
-            branches:
-              only:
-                - aws-sg-white-list-circleci-ip-demo
 
   aws-cloudwatch-dashboard-annotation-demo:
     jobs:
