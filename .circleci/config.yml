@@ -8,6 +8,10 @@ executors:
     docker:
       - image: docker:19.03.5-git
 
+  aws-cloudwatch-dashboard-annotation-demo:
+    docker:
+      - image: cimg/python:3.9
+
 commands:
   install-awscli:
     steps:
@@ -50,7 +54,7 @@ jobs:
   aws-cloudwatch-dashboard-annotation-demo1:
     environment:
       AWS_PAGER: ''
-    executor: default
+    executor: aws-cloudwatch-dashboard-annotation-demo
     steps:
       - checkout
       - install-awscli
