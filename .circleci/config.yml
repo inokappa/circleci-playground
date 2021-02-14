@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  aws-cloudwatch-dashboard-annotation: inokappa/aws-cloudwatch-dashboard-annotation@0.0.2
+  aws-cloudwatch-dashboard-annotation: inokappa/aws-cloudwatch-dashboard-annotation@0.0.3
 
 executors:
   default:
