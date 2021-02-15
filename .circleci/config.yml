@@ -161,3 +161,13 @@ workflows:
             branches:
               only:
                 - aws-cloudwatch-dashboard-annotation-demo
+      - aws-cloudwatch-dashboard-annotation-demo3:
+          filters:
+            branches:
+              only:
+                - aws-cloudwatch-dashboard-annotation-demo
+      - aws-cloudwatch-dashboard-annotation-demo4:
+          filters:
+            branches:
+              only:
+                - aws-cloudwatch-dashboard-annotation-demo
