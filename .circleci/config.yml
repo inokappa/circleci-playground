@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  aws-cloudwatch-dashboard-annotation: inokappa/aws-cloudwatch-dashboard-annotation@0.0.4
+  aws-cloudwatch-dashboard-annotation: inokappa/aws-cloudwatch-dashboard-annotation@0.0.5
 
 executors:
   default:
@@ -135,8 +135,8 @@ jobs:
           name: Your Deploy Action
           command: |
             echo "Your Deploy Action"
-            echo "export DASHBOARD_TITLE=ECS-dashboard" >> $BASH_ENV
-            echo "export WIDGET_TITLE=Invocations" >> $BASH_ENV
+            echo "export DASHBOARD_TITLE='ECS-dashboard'" >> $BASH_ENV
+            echo "export WIDGET_TITLE='Invocations Widget'" >> $BASH_ENV
             echo "export DEPLOY_FINISHED_DATETIME=$(date -u '+%Y-%m-%dT%H:%M:%S.000Z')" >> $BASH_ENV
       - aws-cloudwatch-dashboard-annotation/add:
           dashboard_title: ${DASHBOARD_TITLE}
