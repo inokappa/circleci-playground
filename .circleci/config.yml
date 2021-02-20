@@ -67,12 +67,10 @@ jobs:
           name: Your Deploy Action
           command: |
             echo "Your Deploy Action"
-            echo "export DEPLOY_FINISHED_DATETIME=$(date -u '+%Y-%m-%dT%H:%M:%S.000Z')" >> $BASH_ENV
       - aws-cloudwatch-dashboard-annotation/add:
-          dashboard_title: "ECS-dashboard"
-          widget_title: "CPUUtilization"
+          dashboard_title: Dashboard1
+          widget_title: CPUUtilization
           display_diff: "yes"
-          deploy_finished_datetime: ${DEPLOY_FINISHED_DATETIME}
 
   aws-cloudwatch-dashboard-annotation-demo2:
     environment:
@@ -84,10 +82,9 @@ jobs:
           name: Your Deploy Action
           command: |
             echo "Your Deploy Action"
-            echo "export DEPLOY_FINISHED_DATETIME=$(date -u '+%Y-%m-%dT%H:%M:%S.000Z')" >> $BASH_ENV
       - aws-cloudwatch-dashboard-annotation/add:
-          dashboard_title: "ECS-dashboard"
-          widget_title: "MemoryUtilization"
+          dashboard_title: Dashboard2
+          widget_title: MemoryUtilization
           display_diff: "yes"
           deploy_finished_datetime: ${DEPLOY_FINISHED_DATETIME}
 
@@ -101,41 +98,7 @@ jobs:
           name: Your Deploy Action
           command: |
             echo "Your Deploy Action"
-            echo "export DEPLOY_FINISHED_DATETIME=$(date -u '+%Y-%m-%dT%H:%M:%S.000Z')" >> $BASH_ENV
-      - aws-cloudwatch-dashboard-annotation/add:
-          dashboard_title: "ECS-dashboard"
-          widget_title: "CPUReservation"
-          display_diff: "yes"
-          deploy_finished_datetime: ${DEPLOY_FINISHED_DATETIME}
-
-  aws-cloudwatch-dashboard-annotation-demo4:
-    environment:
-      AWS_PAGER: ''
-    executor: aws-cloudwatch-dashboard-annotation-demo
-    steps:
-      - checkout
-      - run:
-          name: Your Deploy Action
-          command: |
-            echo "Your Deploy Action"
-            echo "export DEPLOY_FINISHED_DATETIME=$(date -u '+%Y-%m-%dT%H:%M:%S.000Z')" >> $BASH_ENV
-      - aws-cloudwatch-dashboard-annotation/add:
-          dashboard_title: "ECS-dashboard"
-          widget_title: "MemoryReservation"
-          display_diff: "yes"
-          deploy_finished_datetime: ${DEPLOY_FINISHED_DATETIME}
-
-  aws-cloudwatch-dashboard-annotation-demo5:
-    environment:
-      AWS_PAGER: ''
-    executor: aws-cloudwatch-dashboard-annotation-demo
-    steps:
-      - checkout
-      - run:
-          name: Your Deploy Action
-          command: |
-            echo "Your Deploy Action"
-            echo "export DASHBOARD_TITLE='ECS-dashboard'" >> $BASH_ENV
+            echo "export DASHBOARD_TITLE='Dashboard3'" >> $BASH_ENV
             echo "export WIDGET_TITLE='Invocations Widget'" >> $BASH_ENV
             echo "export DEPLOY_FINISHED_DATETIME=$(date -u '+%Y-%m-%dT%H:%M:%S.000Z')" >> $BASH_ENV
       - aws-cloudwatch-dashboard-annotation/add:
@@ -181,16 +144,6 @@ workflows:
               only:
                 - aws-cloudwatch-dashboard-annotation-demo
       - aws-cloudwatch-dashboard-annotation-demo3:
-          filters:
-            branches:
-              only:
-                - aws-cloudwatch-dashboard-annotation-demo
-      - aws-cloudwatch-dashboard-annotation-demo4:
-          filters:
-            branches:
-              only:
-                - aws-cloudwatch-dashboard-annotation-demo
-      - aws-cloudwatch-dashboard-annotation-demo5:
           filters:
             branches:
               only:
