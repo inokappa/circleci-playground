@@ -135,10 +135,12 @@ jobs:
           name: Your Deploy Action
           command: |
             echo "Your Deploy Action"
+            echo "export DASHBOARD_TITLE=ECS-dashboard" >> $BASH_ENV
+            echo "export WIDGET_TITLE=Invocations" >> $BASH_ENV
             echo "export DEPLOY_FINISHED_DATETIME=$(date -u '+%Y-%m-%dT%H:%M:%S.000Z')" >> $BASH_ENV
       - aws-cloudwatch-dashboard-annotation/add:
-          dashboard_title: "ECS-dashboard"
-          widget_title: "Invocations"
+          dashboard_title: ${DASHBOARD_TITLE}
+          widget_title: ${WIDGET_TITLE}
           display_diff: "yes"
           deploy_finished_datetime: ${DEPLOY_FINISHED_DATETIME}
 
