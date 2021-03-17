@@ -1,16 +1,16 @@
 version: 2.1
 
-orbs:
-  aws-cloudwatch-dashboard-annotation: inokappa/aws-cloudwatch-dashboard-annotation@0.0.5
+  # orbs:
+  #   aws-cloudwatch-dashboard-annotation: inokappa/aws-cloudwatch-dashboard-annotation@0.0.5
 
 executors:
   default:
     docker:
       - image: docker:19.03.5-git
 
-  aws-cloudwatch-dashboard-annotation-demo:
-    docker:
-      - image: cimg/python:3.9
+        # aws-cloudwatch-dashboard-annotation-demo:
+        #   docker:
+        #     - image: cimg/python:3.9
 
 commands:
   install-dependencies:
@@ -46,7 +46,17 @@ jobs:
       - run:
           name: Build
           command: |
+            SECONDS=0
             echo 'Build'
+            echo 'Build'
+            echo 'Build'
+            echo 'Build'
+            sleep 10
+            duration_seconds=$SECONDS
+
+            echo "------------------------"
+            echo $duration_seconds
+            echo "------------------------"
 
   deploy:
     executor:
@@ -57,55 +67,55 @@ jobs:
           command: |
             echo 'Deploy'
 
-  aws-cloudwatch-dashboard-annotation-demo1:
-    environment:
-      AWS_PAGER: ''
-    executor: aws-cloudwatch-dashboard-annotation-demo
-    steps:
-      - checkout
-      - run:
-          name: Your Deploy Action
-          command: |
-            echo "Your Deploy Action"
-      - aws-cloudwatch-dashboard-annotation/add:
-          dashboard_title: Dashboard1
-          widget_title: CPUUtilization
-          display_diff: "yes"
+            # aws-cloudwatch-dashboard-annotation-demo1:
+            #   environment:
+            #     AWS_PAGER: ''
+            #   executor: aws-cloudwatch-dashboard-annotation-demo
+            #   steps:
+            #     - checkout
+            #     - run:
+            #         name: Your Deploy Action
+            #         command: |
+            #           echo "Your Deploy Action"
+            #     - aws-cloudwatch-dashboard-annotation/add:
+            #         dashboard_title: Dashboard1
+            #         widget_title: CPUUtilization
+            #         display_diff: "yes"
 
-  aws-cloudwatch-dashboard-annotation-demo2:
-    environment:
-      AWS_PAGER: ''
-    executor: aws-cloudwatch-dashboard-annotation-demo
-    steps:
-      - checkout
-      - run:
-          name: Your Deploy Action
-          command: |
-            echo "Your Deploy Action"
-      - aws-cloudwatch-dashboard-annotation/add:
-          dashboard_title: Dashboard2
-          widget_title: MemoryUtilization
-          display_diff: "yes"
-          deploy_finished_datetime: ${DEPLOY_FINISHED_DATETIME}
+            # aws-cloudwatch-dashboard-annotation-demo2:
+            #   environment:
+            #     AWS_PAGER: ''
+            #   executor: aws-cloudwatch-dashboard-annotation-demo
+            #   steps:
+            #     - checkout
+            #     - run:
+            #         name: Your Deploy Action
+            #         command: |
+            #           echo "Your Deploy Action"
+            #     - aws-cloudwatch-dashboard-annotation/add:
+            #         dashboard_title: Dashboard2
+            #         widget_title: MemoryUtilization
+            #         display_diff: "yes"
+            #         deploy_finished_datetime: ${DEPLOY_FINISHED_DATETIME}
 
-  aws-cloudwatch-dashboard-annotation-demo3:
-    environment:
-      AWS_PAGER: ''
-    executor: aws-cloudwatch-dashboard-annotation-demo
-    steps:
-      - checkout
-      - run:
-          name: Your Deploy Action
-          command: |
-            echo "Your Deploy Action"
-            echo "export DASHBOARD_TITLE='Dashboard3'" >> $BASH_ENV
-            echo "export WIDGET_TITLE='Invocations Widget'" >> $BASH_ENV
-            echo "export DEPLOY_FINISHED_DATETIME=$(date -u '+%Y-%m-%dT%H:%M:%S.000Z')" >> $BASH_ENV
-      - aws-cloudwatch-dashboard-annotation/add:
-          dashboard_title: ${DASHBOARD_TITLE}
-          widget_title: ${WIDGET_TITLE}
-          display_diff: "yes"
-          deploy_finished_datetime: ${DEPLOY_FINISHED_DATETIME}
+            # aws-cloudwatch-dashboard-annotation-demo3:
+            #   environment:
+            #     AWS_PAGER: ''
+            #   executor: aws-cloudwatch-dashboard-annotation-demo
+            #   steps:
+            #     - checkout
+            #     - run:
+            #         name: Your Deploy Action
+            #         command: |
+            #           echo "Your Deploy Action"
+            #           echo "export DASHBOARD_TITLE='Dashboard3'" >> $BASH_ENV
+            #           echo "export WIDGET_TITLE='Invocations Widget'" >> $BASH_ENV
+            #           echo "export DEPLOY_FINISHED_DATETIME=$(date -u '+%Y-%m-%dT%H:%M:%S.000Z')" >> $BASH_ENV
+            #     - aws-cloudwatch-dashboard-annotation/add:
+            #         dashboard_title: ${DASHBOARD_TITLE}
+            #         widget_title: ${WIDGET_TITLE}
+            #         display_diff: "yes"
+            #         deploy_finished_datetime: ${DEPLOY_FINISHED_DATETIME}
 
 workflows:
   version: 2
@@ -127,24 +137,25 @@ workflows:
               only: 
                 - master
                 - development
+                - aws-cloudwatch-dashboard-annotation-demo
       - deploy:
           requires:
             - build
 
-  aws-cloudwatch-dashboard-annotation-demo:
-    jobs:
-      - aws-cloudwatch-dashboard-annotation-demo1:
-          filters:
-            branches:
-              only:
-                - aws-cloudwatch-dashboard-annotation-demo
-      - aws-cloudwatch-dashboard-annotation-demo2:
-          filters:
-            branches:
-              only:
-                - aws-cloudwatch-dashboard-annotation-demo
-      - aws-cloudwatch-dashboard-annotation-demo3:
-          filters:
-            branches:
-              only:
-                - aws-cloudwatch-dashboard-annotation-demo
+              # aws-cloudwatch-dashboard-annotation-demo:
+              #   jobs:
+              #     - aws-cloudwatch-dashboard-annotation-demo1:
+              #         filters:
+              #           branches:
+              #             only:
+              #               - aws-cloudwatch-dashboard-annotation-demo
+              #     - aws-cloudwatch-dashboard-annotation-demo2:
+              #         filters:
+              #           branches:
+              #             only:
+              #               - aws-cloudwatch-dashboard-annotation-demo
+              #     - aws-cloudwatch-dashboard-annotation-demo3:
+              #         filters:
+              #           branches:
+              #             only:
+              #               - aws-cloudwatch-dashboard-annotation-demo
