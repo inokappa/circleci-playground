@@ -33,7 +33,8 @@ jobs:
             apk update && apk add bash
             echo 'Deploy'
             ls -al
-            ./deploy
+            ./deploy && echo 'aaaaaaaaa'
+            echo 'bbbbbb'
 
 workflows:
   version: 2
