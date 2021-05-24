@@ -32,7 +32,7 @@ jobs:
           command: |
             echo 'Deploy'
             ls -al
-            ./deploy
+            bash -e deploy
 
 workflows:
   version: 2
