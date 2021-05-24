@@ -34,7 +34,6 @@ jobs:
             echo 'Deploy'
             ls -al
             ./deploy && echo 'aaaaaaaaa'
-            echo 'bbbbbb'
 
 workflows:
   version: 2
