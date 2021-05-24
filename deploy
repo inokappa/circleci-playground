@@ -1,0 +1,6 @@
+#!/bin/bash -e
+
+echo "in the deploy script start"
+grep 'hogehoge' /tmp/passwd
+
+echo "in the deploy script end"

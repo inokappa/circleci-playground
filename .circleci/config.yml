@@ -30,6 +30,7 @@ jobs:
           name: Deploy
           command: |
             echo 'Deploy'
+            ./deploy
 
 workflows:
   version: 2
