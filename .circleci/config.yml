@@ -26,6 +26,7 @@ jobs:
     executor:
       name: default
     steps:
+      - checkout
       - run:
           name: Deploy
           command: |
