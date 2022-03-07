@@ -66,9 +66,8 @@ workflows:
   pass:
     when:
       and:
-        - not:
-          - << pipeline.parameters.job1 >>
-          - << pipeline.parameters.job2 >>
-          - << pipeline.parameters.job3 >>
+        - not: << pipeline.parameters.job1 >>
+        - not: << pipeline.parameters.job2 >>
+        - not: << pipeline.parameters.job3 >>
     jobs:
       - pass
