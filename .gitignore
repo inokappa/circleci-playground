@@ -1,2 +1,4 @@
 .envrc
+.idea/
 .circleci/config.yml.default
+.circleci/config.yml.bk1

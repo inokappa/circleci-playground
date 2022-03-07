@@ -44,6 +44,11 @@ jobs:
           command: |
             echo 'job3'
 
+  pass:
+    executor: default
+    steps:
+      - pass
+
 workflows:
   version: 2
   job1:
@@ -58,3 +63,8 @@ workflows:
     when: << pipeline.parameters.job3 >>
     jobs:
       - job3
+  pass:
+    when:
+      not: [<< pipeline.parameters.job1 >>, << pipeline.parameters.job2 >>, << pipeline.parameters.job3 >>]
+    jobs:
+      - pass
