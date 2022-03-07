@@ -1,58 +1,15 @@
-version: 2.1
+version: '2.1'
 
-executors:
-  default:
-    docker:
-      - image: docker:19.03.5-git
-
-jobs:
-  test:
-    executor:
-      name: default
-    steps:
-      - run:
-          name: Test
-          command: |
-            echo 'Test'
-  build:
-    executor:
-      name: default
-    steps:
-      - run:
-          name: Build
-          command: |
-            echo 'Build'
-  deploy:
-    executor:
-      name: default
-    steps:
-      - checkout
-      - run:
-          name: Deploy
-          command: |
-            apk update && apk add bash
-            echo 'Deploy'
-            ls -al
-            ./deploy && echo 'aaaaaaaaa'
+orbs:
+  path-filtering: circleci/path-filtering@0.1.1
 
 workflows:
-  version: 2
-  test-only:
+  generate-config:
     jobs:
-      - test:
-          filters:
-            branches:
-              ignore: 
-                - master
-                - development
-  build-after-deploy:
-    jobs:
-      - build:
-          filters:
-            branches:
-              only: 
-                - master
-                - development
-      - deploy:
-          requires:
-            - build
+      - path-filtering/filter:
+          base-revision: main
+          config-path: .circleci/continue-config.yml
+          mapping: |
+            job1/.* job1 true
+            job2/.* job2 true
+            job3/.* job3 true

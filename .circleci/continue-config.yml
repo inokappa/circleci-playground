@@ -1,0 +1,60 @@
+version: 2.1
+
+parameters:
+  job1:
+    type: boolean
+    default: false
+  job2:
+    type: boolean
+    default: false
+  job3:
+    type: boolean
+    default: false
+
+executors:
+  default:
+    docker:
+      - image: cimg/base:2022.03
+
+jobs:
+  job1:
+    executor: default
+    steps:
+      - checkout
+      - run:
+          name: echo job1
+          command: |
+            echo 'job1'
+
+  job2:
+    executor: default
+    steps:
+      - checkout
+      - run:
+          name: echo job2
+          command: |
+            echo 'job1'
+
+  job3:
+    executor: default
+    steps:
+      - checkout
+      - run:
+          name: echo job3
+          command: |
+            echo 'job3'
+
+workflows:
+  version: 2
+  job1:
+    when: << pipeline.parameters.job1 >>
+    jobs:
+      - job1
+  job2:
+    when: << pipeline.parameters.job2 >>
+    jobs:
+      - job2
+  job3:
+    when: << pipeline.parameters.job3 >>
+    jobs:
+      - job3
