@@ -47,7 +47,7 @@ jobs:
   pass:
     executor: default
     steps:
-      - run: echo "This job is nothing to do. Because without the job, the workflow will fail."
+      - run: echo "This job is nothing to do. Because without the job, the workflow will fail. (T T)"
 
 workflows:
   version: 2
